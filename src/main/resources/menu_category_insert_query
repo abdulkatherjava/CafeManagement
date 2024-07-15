@@ -1,0 +1,12 @@
+INSERT INTO menu_category (menu_item_category)
+VALUES
+('Appetizers'),
+('Salads'),
+('Main Courses'),
+('Desserts'),
+('Beverages'),
+('Soups'),
+('Sandwiches'),
+('Pizzas'),
+('Pasta'),
+('Seafood');
