@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: CafeManagement
+
+  datasource:
+    url: jdbc:mysql://mysql:3306/habibi
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # For PostgreSQL (uncomment if needed)
+    # url: jdbc:postgresql://localhost:5432/cafe_mgmt
+    # username: postgres
+    # password: root
+    # driver-class-name: org.postgresql.Driver
+
+  main:
+    allow-bean-definition-overriding: true
+
+  devtools:
+    restart:
+      enabled: true
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
