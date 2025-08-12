@@ -2,6 +2,8 @@ package com.habibi.cafemanagement.service;
 
 import com.habibi.cafemanagement.dto.CategoryRequest;
 import com.habibi.cafemanagement.dto.CategoryResponse;
+import com.habibi.cafemanagement.dto.CategorySearchRequest;
+import com.habibi.cafemanagement.dto.SortRequest;
 import com.habibi.cafemanagement.exception.ResourceNotFoundException;
 import com.habibi.cafemanagement.model.Category;
 import com.habibi.cafemanagement.repository.CategoryRepository;
@@ -40,7 +42,6 @@ public class CategoryService {
 
         return mapToResponse(updated);
     }
-
 
     public List<CategoryResponse> getAllCategories() {
         return Optional.ofNullable(categoryRepository.findAll())
@@ -91,6 +92,32 @@ public class CategoryService {
         }
     }
 
+    public List<CategoryResponse> getCategories(CategorySearchRequest request) {
+        try {
+            List<Sort.Order> orders = sortUtil(request.getSort());
+            Pageable pageable = PageRequest.of(request.getPage(), request.getSize(), Sort.by(orders));
+
+            String nameFilter = null;
+            if (request.getFilters() != null) {
+                nameFilter = request.getFilters().get("categoryName");
+            }
+
+            Page<Category> result;
+            if (nameFilter != null && !nameFilter.isBlank()) {
+                result = categoryRepository.findByCategoryNameContainingIgnoreCase(nameFilter, pageable);
+            } else {
+                result = categoryRepository.findAll(pageable);
+            }
+
+            return result.getContent().stream()
+                    .map(this::mapToResponse)
+                    .collect(Collectors.toList());
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch paginated/sorted categories: " + e.getMessage(), e);
+        }
+    }
+
     public static List<Sort.Order> sortUtil(String[] sortParams) {
         List<Sort.Order> orders = new ArrayList<>();
         if (sortParams == null || sortParams.length == 0) return orders;
@@ -117,7 +144,30 @@ public class CategoryService {
         return orders;
     }
 
-private CategoryResponse mapToResponse(Category category) {
+    public static List<Sort.Order> sortUtil(List<SortRequest> sortRequests) {
+        List<Sort.Order> orders = new ArrayList<>();
+        if (sortRequests == null) return orders;
+
+        for (SortRequest s : sortRequests) {
+            if (s == null || s.getField() == null) continue;
+            String property = s.getField().trim();
+            if (property.isEmpty()) continue;
+            if ("createdDate".equals(property)) {
+                property = "createdAt";
+            }
+            Sort.Direction direction = Sort.Direction.ASC;
+            if (s.getDirection() != null && !s.getDirection().isBlank()) {
+                try {
+                    direction = Sort.Direction.fromString(s.getDirection().trim());
+                } catch (IllegalArgumentException ignored) {
+                }
+            }
+            orders.add(new Sort.Order(direction, property));
+        }
+        return orders;
+    }
+
+    private CategoryResponse mapToResponse(Category category) {
         CategoryResponse response = new CategoryResponse();
         response.setId(category.getId());
         response.setCategoryName(category.getCategoryName());
