@@ -2,6 +2,7 @@ package com.habibi.cafemanagement.controller;
 
 import com.habibi.cafemanagement.dto.CategoryRequest;
 import com.habibi.cafemanagement.dto.CategoryResponse;
+import com.habibi.cafemanagement.dto.CategorySearchRequest;
 import com.habibi.cafemanagement.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,13 @@ public class CategoryController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "categoryName,asc") String[] sort) {
         List<CategoryResponse> categories = categoryService.getAllCategories(page, size, sort);
+        return ResponseEntity.status(HttpStatus.OK).body(categories);
+    }
+
+    // ✅ POST Filtered Categories with pagination and sorting
+    @PostMapping("/categories/filter")
+    public ResponseEntity<List<CategoryResponse>> getCategories(@RequestBody CategorySearchRequest request) {
+        List<CategoryResponse> categories = categoryService.getCategories(request);
         return ResponseEntity.status(HttpStatus.OK).body(categories);
     }
 }
