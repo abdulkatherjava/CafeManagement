@@ -4,7 +4,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PageableUtil {
@@ -14,7 +13,7 @@ public class PageableUtil {
             return PageRequest.of(page, size, Sort.unsorted());
         }
 
-        List<Sort.Order> orders = CategoryService.sortUtil(sortParams);
+        List<Sort.Order> orders = CategoryService1.sortUtil(sortParams);
 
         return PageRequest.of(page, size, Sort.by(orders));
     }

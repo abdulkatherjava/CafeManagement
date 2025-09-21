@@ -2,6 +2,7 @@ package com.habibi.cafemanagement.controller;
 
 import com.habibi.cafemanagement.dto.CategoryRequest;
 import com.habibi.cafemanagement.dto.CategoryResponse;
+import com.habibi.cafemanagement.dto.PageAndSortRequest;
 import com.habibi.cafemanagement.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,11 +59,20 @@ public class CategoryController {
 
     // ✅ GET All Categories
     @GetMapping("/categories")
-    public ResponseEntity<List<CategoryResponse>> getAllCategories(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "categoryName,asc") String[] sort) {
-        List<CategoryResponse> categories = categoryService.getAllCategories(page, size, sort);
+//    public ResponseEntity<List<CategoryResponse>> getAllCategories(
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "10") int size,
+//            @RequestParam(defaultValue = "categoryName,asc") String[] sort) {
+//        List<CategoryResponse> categories = categoryService.getAllCategories(page, size, sort);
+//        return ResponseEntity.status(HttpStatus.OK).body(categories);
+//    }
+
+    public ResponseEntity<List<CategoryResponse>> getAllCategories(@RequestBody PageAndSortRequest request) {
+        List<CategoryResponse> categories = categoryService.getAllCategories(
+                request.getPage(),
+                request.getSize(),
+                request.getSort() != null ? request.getSort().toArray(new String[0]) : null
+        );
         return ResponseEntity.status(HttpStatus.OK).body(categories);
     }
 }
