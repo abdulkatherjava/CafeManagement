@@ -23,6 +23,7 @@ public class MenuItemController {
     private MenuItemService menuItemService;
 
     // ✅ Create Menu Item
+    // This is tested and working fine.
     @PostMapping("/menu-items")
     public ResponseEntity<MenuItemResponse> createMenuItem(@Valid @RequestBody MenuItemRequest request) {
         MenuItemResponse response = menuItemService.createMenuItem(request);
@@ -59,7 +60,8 @@ public class MenuItemController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-    // ✅ Get All Menu Items with Pagination & Sorting
+    // ✅ Get All Menu Items with Pagination & Sorting/
+    // This is tested and working fine.
     @GetMapping("/menu-items")
     public ResponseEntity<List<MenuItemResponse>> getAllMenuItems(@RequestBody PageAndSortRequest request) {
         List<MenuItemResponse> menuItems = menuItemService.getAllMenuItems(

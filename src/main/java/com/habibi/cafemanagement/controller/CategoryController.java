@@ -21,6 +21,8 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
+    // ✅ Create the Category
+    // Testing has done and working
     @PostMapping("/categories")
     public ResponseEntity<CategoryResponse> createCategory(@Valid @RequestBody CategoryRequest request) {
         CategoryResponse response = categoryService.createCategory(request);
@@ -28,6 +30,7 @@ public class CategoryController {
     }
 
     // ✅ Update the Category
+    // Testing has done and working
     @PutMapping("/categories/{id}")
     public ResponseEntity<CategoryResponse> updateCategory(
             @PathVariable Long id,
@@ -37,6 +40,7 @@ public class CategoryController {
     }
 
     // ✅ GET category by ID
+    // Testing has done and working
     @GetMapping("/categories/{id}")
     public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable Long id) {
         CategoryResponse response = categoryService.getCategoryById(id);
@@ -47,10 +51,11 @@ public class CategoryController {
     @DeleteMapping("/categories/{id}")
     public ResponseEntity<Void> deleteCategoryById(@PathVariable Long id) {
         categoryService.deleteCategoryById(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    // ✅ GET category by ID
+    // ✅ GET category by search string
+    // Testing has done and working
     @GetMapping("/categories/search")
     public ResponseEntity<List<CategoryResponse>> searchCategoriesByName(@RequestParam("name") String namePart) {
         List<CategoryResponse> result = categoryService.searchCategoriesByName(namePart);
