@@ -25,4 +25,4 @@ Cafe Management
 - category and menu items APIs are ready
 - postman collection for both ready
 - testing done for both
-- had common sorting and pagination
+- had common sorting and pagination done
