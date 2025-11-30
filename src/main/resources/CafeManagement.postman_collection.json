@@ -1,0 +1,280 @@
+{
+  "info": {
+    "_postman_id": "cafe-management-collection",
+    "name": "CafeManagement API",
+    "description": "Collection covering Category and Menu Item endpoints for CafeManagement (/api/v1). Update the `baseUrl` variable to point at your running server.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Category",
+      "item": [
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"categoryName\": \"Coffee\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories"]
+            }
+          }
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"categoryName\": \"Cold Beverages\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "{{categoryId}}"],
+              "variable": [
+                {
+                  "key": "categoryId",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Category by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "{{categoryId}}"],
+              "variable": [
+                {
+                  "key": "categoryId",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "{{categoryId}}"],
+              "variable": [
+                {
+                  "key": "categoryId",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search Categories by Name",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/categories/search?name={{searchName}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "search"],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "Latte",
+                  "description": "Partial match search string"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "searchName",
+                  "value": "Latte"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Categories (Page & Sort)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"page\": 0,\n  \"size\": 10,\n  \"sort\": [\"categoryName,asc\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Menu Item",
+      "item": [
+        {
+          "name": "Create Menu Item",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Espresso\",\n  \"description\": \"Strong coffee shot\",\n  \"price\": 2.50,\n  \"barcode\": \"1234567890123\",\n  \"imagePath\": \"/images/espresso.png\",\n  \"isAvailable\": true,\n  \"categoryId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/menu-items",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu-items"]
+            }
+          }
+        },
+        {
+          "name": "Update Menu Item",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Iced Latte\",\n  \"description\": \"Milk coffee over ice\",\n  \"price\": 4.75,\n  \"barcode\": \"9876543210987\",\n  \"imagePath\": \"/images/iced-latte.png\",\n  \"isAvailable\": true,\n  \"categoryId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/menu-items/{{menuItemId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu-items", "{{menuItemId}}"],
+              "variable": [
+                {
+                  "key": "menuItemId",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Menu Item by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/menu-items/{{menuItemId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu-items", "{{menuItemId}}"],
+              "variable": [
+                {
+                  "key": "menuItemId",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Menu Item",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/menu-items/{{menuItemId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu-items", "{{menuItemId}}"],
+              "variable": [
+                {
+                  "key": "menuItemId",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search Menu Items by Name",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/menu-items/search?name={{searchName}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu-items", "search"],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "Latte",
+                  "description": "Partial match search string"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "searchName",
+                  "value": "Latte"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Menu Items (Page & Sort)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"page\": 0,\n  \"size\": 10,\n  \"sort\": [\"name,asc\", \"price,desc\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/menu-items",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu-items"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api/v1"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-package com.habibi.cafemanagement.service;
+package com.habibi.cafemanagement.common;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

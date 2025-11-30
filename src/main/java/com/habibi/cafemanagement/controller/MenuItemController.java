@@ -1,6 +1,5 @@
 package com.habibi.cafemanagement.controller;
 
-import com.habibi.cafemanagement.dto.MenuItemPageRequest;
 import com.habibi.cafemanagement.dto.MenuItemRequest;
 import com.habibi.cafemanagement.dto.MenuItemResponse;
 import com.habibi.cafemanagement.dto.PageAndSortRequest;
@@ -67,8 +66,7 @@ public class MenuItemController {
         List<MenuItemResponse> menuItems = menuItemService.getAllMenuItems(
                 request.getPage(),
                 request.getSize(),
-                request.getSort() != null ? request.getSort().toArray(new String[0]) : null
-        );
+                request.getSort() != null ? request.getSort().toArray(new String[0]) : null);
         return ResponseEntity.status(HttpStatus.OK).body(menuItems);
     }
 }

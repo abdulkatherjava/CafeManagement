@@ -26,7 +26,8 @@ public class CategoryController {
     @PostMapping("/categories")
     public ResponseEntity<CategoryResponse> createCategory(@Valid @RequestBody CategoryRequest request) {
         CategoryResponse response = categoryService.createCategory(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response); // Only handles success, rest is handled globally
+        return ResponseEntity.status(HttpStatus.CREATED).body(response); // Only handles success, rest is handled
+                                                                         // globally
     }
 
     // ✅ Update the Category
@@ -62,22 +63,23 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+    // @GetMapping("/categories")
+    // public ResponseEntity<List<CategoryResponse>> getAllCategories(
+    // @RequestParam(defaultValue = "0") int page,
+    // @RequestParam(defaultValue = "10") int size,
+    // @RequestParam(defaultValue = "categoryName,asc") String[] sort) {
+    // List<CategoryResponse> categories = categoryService.getAllCategories(page,
+    // size, sort);
+    // return ResponseEntity.status(HttpStatus.OK).body(categories);
+    // }
+
     // ✅ GET All Categories
     @GetMapping("/categories")
-//    public ResponseEntity<List<CategoryResponse>> getAllCategories(
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "10") int size,
-//            @RequestParam(defaultValue = "categoryName,asc") String[] sort) {
-//        List<CategoryResponse> categories = categoryService.getAllCategories(page, size, sort);
-//        return ResponseEntity.status(HttpStatus.OK).body(categories);
-//    }
-
     public ResponseEntity<List<CategoryResponse>> getAllCategories(@RequestBody PageAndSortRequest request) {
         List<CategoryResponse> categories = categoryService.getAllCategories(
                 request.getPage(),
                 request.getSize(),
-                request.getSort() != null ? request.getSort().toArray(new String[0]) : null
-        );
+                request.getSort() != null ? request.getSort().toArray(new String[0]) : null);
         return ResponseEntity.status(HttpStatus.OK).body(categories);
     }
 }
