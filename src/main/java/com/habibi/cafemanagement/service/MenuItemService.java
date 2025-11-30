@@ -2,6 +2,8 @@ package com.habibi.cafemanagement.service;
 
 import com.habibi.cafemanagement.dto.MenuItemRequest;
 import com.habibi.cafemanagement.dto.MenuItemResponse;
+import com.habibi.cafemanagement.dto.PageAndSortRequest;
+import com.habibi.cafemanagement.dto.PagedResponse;
 
 import java.util.List;
 
@@ -19,5 +21,5 @@ public interface MenuItemService {
 
     List<MenuItemResponse> searchMenuItemsByName(String namePart);
 
-    List<MenuItemResponse> getAllMenuItems(int page, int size, String[] sortParams);
+    PagedResponse<MenuItemResponse> getAllMenuItems(PageAndSortRequest request);
 }

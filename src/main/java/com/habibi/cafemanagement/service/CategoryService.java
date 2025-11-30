@@ -2,6 +2,8 @@ package com.habibi.cafemanagement.service;
 
 import com.habibi.cafemanagement.dto.CategoryRequest;
 import com.habibi.cafemanagement.dto.CategoryResponse;
+import com.habibi.cafemanagement.dto.PageAndSortRequest;
+import com.habibi.cafemanagement.dto.PagedResponse;
 
 import java.util.List;
 
@@ -19,5 +21,5 @@ public interface CategoryService {
 
     List<CategoryResponse> searchCategoriesByName(String namePart);
 
-    List<CategoryResponse> getAllCategories(int page, int size, String[] sortParams);
+    PagedResponse<CategoryResponse> getAllCategories(PageAndSortRequest request);
 }

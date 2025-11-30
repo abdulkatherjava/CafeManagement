@@ -2,23 +2,25 @@ package com.habibi.cafemanagement.service;
 
 import com.habibi.cafemanagement.dto.MenuItemRequest;
 import com.habibi.cafemanagement.dto.MenuItemResponse;
+import com.habibi.cafemanagement.dto.PageAndSortRequest;
+import com.habibi.cafemanagement.dto.PagedResponse;
 import com.habibi.cafemanagement.exception.ResourceNotFoundException;
 import com.habibi.cafemanagement.model.Category;
 import com.habibi.cafemanagement.model.MenuItem;
 import com.habibi.cafemanagement.repository.CategoryRepository;
 import com.habibi.cafemanagement.repository.MenuItemRepository;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class MenuItemServiceImpl implements MenuItemService {
+public class MenuItemServiceImpl extends BaseService<MenuItem, Long> implements MenuItemService {
 
     private final MenuItemRepository menuItemRepository;
     private final CategoryRepository categoryRepository;
@@ -27,6 +29,11 @@ public class MenuItemServiceImpl implements MenuItemService {
     public MenuItemServiceImpl(MenuItemRepository menuItemRepository, CategoryRepository categoryRepository) {
         this.menuItemRepository = menuItemRepository;
         this.categoryRepository = categoryRepository;
+    }
+
+    @Override
+    protected JpaRepository<MenuItem, Long> getRepository() {
+        return menuItemRepository;
     }
 
     @Transactional
@@ -101,6 +108,10 @@ public class MenuItemServiceImpl implements MenuItemService {
 
     @Override
     public List<MenuItemResponse> searchMenuItemsByName(String namePart) {
+        if (namePart == null || namePart.trim().length() < 2) {
+            throw new IllegalArgumentException("Search term must be at least 2 characters");
+        }
+
         List<MenuItem> items = menuItemRepository.findByNameContainingIgnoreCase(namePart);
 
         if (items.isEmpty()) {
@@ -113,45 +124,19 @@ public class MenuItemServiceImpl implements MenuItemService {
     }
 
     @Override
-    public List<MenuItemResponse> getAllMenuItems(int page, int size, String[] sortParams) {
+    public PagedResponse<MenuItemResponse> getAllMenuItems(PageAndSortRequest request) {
         try {
-            List<Sort.Order> orders = sortUtil(sortParams);
-            Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
-            Page<MenuItem> itemPage = menuItemRepository.findAll(pageable);
+            Page<MenuItem> itemPage = getAllWithPagination(request);
 
-            return itemPage.getContent().stream()
+            List<MenuItemResponse> items = itemPage.getContent().stream()
                     .map(this::mapToResponse)
                     .collect(Collectors.toList());
+
+            return PageableUtil.toPagedResponse(itemPage, items);
 
         } catch (Exception e) {
             throw new RuntimeException("Failed to fetch paginated/sorted menu items: " + e.getMessage(), e);
         }
-    }
-
-    // --- helpers ---
-    private static List<Sort.Order> sortUtil(String[] sortParams) {
-        List<Sort.Order> orders = new ArrayList<>();
-        if (sortParams == null || sortParams.length == 0) return orders;
-
-        for (String param : sortParams) {
-            if (param == null || param.isBlank()) continue;
-
-            String[] parts = param.split(",");
-            String property = parts[0].trim();
-            if (property.isEmpty()) continue;
-
-            Sort.Direction direction = Sort.Direction.ASC; // default
-            if (parts.length > 1 && !parts[1].isBlank()) {
-                try {
-                    direction = Sort.Direction.fromString(parts[1].trim());
-                } catch (IllegalArgumentException ignored) {
-                    // keep default ASC if invalid
-                }
-            }
-
-            orders.add(new Sort.Order(direction, property));
-        }
-        return orders;
     }
 
     private MenuItemResponse mapToResponse(MenuItem menuItem) {
