@@ -5,27 +5,31 @@ import com.habibi.cafemanagement.dto.CategoryResponse;
 import com.habibi.cafemanagement.exception.ResourceNotFoundException;
 import com.habibi.cafemanagement.model.Category;
 import com.habibi.cafemanagement.repository.CategoryRepository;
+import com.habibi.cafemanagement.dto.PageAndSortRequest;
+import com.habibi.cafemanagement.dto.PagedResponse;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class CategoryServiceImpl implements CategoryService {
+public class CategoryServiceImpl extends BaseService<Category, Long> implements CategoryService {
 
     private final CategoryRepository categoryRepository;
 
     // Prefer constructor injection
     public CategoryServiceImpl(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
+    }
+
+    @Override
+    protected JpaRepository<Category, Long> getRepository() {
+        return categoryRepository;
     }
 
     @Transactional
@@ -76,6 +80,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryResponse> searchCategoriesByName(String namePart) {
+        if (namePart == null || namePart.trim().length() < 2) {
+            throw new IllegalArgumentException("Search term must be at least 2 characters");
+        }
+
         List<Category> categories = categoryRepository.findByCategoryNameContainingIgnoreCase(namePart);
 
         if (categories.isEmpty()) {
@@ -88,46 +96,19 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryResponse> getAllCategories(int page, int size, String[] sortParams) {
+    public PagedResponse<CategoryResponse> getAllCategories(PageAndSortRequest request) {
         try {
-            List<Sort.Order> orders = sortUtil(sortParams);
-            Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
-            Page<Category> categoryPage = categoryRepository.findAll(pageable);
+            Page<Category> categoryPage = getAllWithPagination(request);
 
-            return categoryPage.getContent().stream()
+            List<CategoryResponse> items = categoryPage.getContent().stream()
                     .map(this::mapToResponse)
                     .collect(Collectors.toList());
+
+            return PageableUtil.toPagedResponse(categoryPage, items);
 
         } catch (Exception e) {
             throw new RuntimeException("Failed to fetch paginated/sorted categories: " + e.getMessage(), e);
         }
-    }
-
-    // --- helpers ---
-
-    private static List<Sort.Order> sortUtil(String[] sortParams) {
-        List<Sort.Order> orders = new ArrayList<>();
-        if (sortParams == null || sortParams.length == 0) return orders;
-
-        for (String param : sortParams) {
-            if (param == null || param.isBlank()) continue;
-
-            String[] parts = param.split(",");
-            String property = parts[0].trim();
-            if (property.isEmpty()) continue;
-
-            Sort.Direction direction = Sort.Direction.ASC; // default
-            if (parts.length > 1 && !parts[1].isBlank()) {
-                try {
-                    direction = Sort.Direction.fromString(parts[1].trim());
-                } catch (IllegalArgumentException ignored) {
-                    // keep default ASC if direction is invalid
-                }
-            }
-
-            orders.add(new Sort.Order(direction, property));
-        }
-        return orders;
     }
 
     private CategoryResponse mapToResponse(Category category) {

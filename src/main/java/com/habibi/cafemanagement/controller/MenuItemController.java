@@ -4,8 +4,10 @@ import com.habibi.cafemanagement.dto.MenuItemPageRequest;
 import com.habibi.cafemanagement.dto.MenuItemRequest;
 import com.habibi.cafemanagement.dto.MenuItemResponse;
 import com.habibi.cafemanagement.dto.PageAndSortRequest;
+import com.habibi.cafemanagement.dto.PagedResponse;
 import com.habibi.cafemanagement.service.MenuItemService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,7 +57,8 @@ public class MenuItemController {
 
     // ✅ Search Menu Items by Name (like searchCategoriesByName)
     @GetMapping("/menu-items/search")
-    public ResponseEntity<List<MenuItemResponse>> searchMenuItemsByName(@RequestParam("name") String namePart) {
+    public ResponseEntity<List<MenuItemResponse>> searchMenuItemsByName(
+            @RequestParam("name") @Size(min = 2, message = "Search term must be at least 2 characters") String namePart) {
         List<MenuItemResponse> result = menuItemService.searchMenuItemsByName(namePart);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
@@ -63,12 +66,8 @@ public class MenuItemController {
     // ✅ Get All Menu Items with Pagination & Sorting/
     // This is tested and working fine.
     @GetMapping("/menu-items")
-    public ResponseEntity<List<MenuItemResponse>> getAllMenuItems(@RequestBody PageAndSortRequest request) {
-        List<MenuItemResponse> menuItems = menuItemService.getAllMenuItems(
-                request.getPage(),
-                request.getSize(),
-                request.getSort() != null ? request.getSort().toArray(new String[0]) : null
-        );
+    public ResponseEntity<PagedResponse<MenuItemResponse>> getAllMenuItems(@Valid @ModelAttribute PageAndSortRequest request) {
+        PagedResponse<MenuItemResponse> menuItems = menuItemService.getAllMenuItems(request);
         return ResponseEntity.status(HttpStatus.OK).body(menuItems);
     }
 }

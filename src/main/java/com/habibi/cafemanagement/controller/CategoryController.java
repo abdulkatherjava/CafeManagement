@@ -3,8 +3,10 @@ package com.habibi.cafemanagement.controller;
 import com.habibi.cafemanagement.dto.CategoryRequest;
 import com.habibi.cafemanagement.dto.CategoryResponse;
 import com.habibi.cafemanagement.dto.PageAndSortRequest;
+import com.habibi.cafemanagement.dto.PagedResponse;
 import com.habibi.cafemanagement.service.CategoryService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,7 +59,8 @@ public class CategoryController {
     // ✅ GET category by search string
     // Testing has done and working
     @GetMapping("/categories/search")
-    public ResponseEntity<List<CategoryResponse>> searchCategoriesByName(@RequestParam("name") String namePart) {
+    public ResponseEntity<List<CategoryResponse>> searchCategoriesByName(
+            @RequestParam("name") @Size(min = 2, message = "Search term must be at least 2 characters") String namePart) {
         List<CategoryResponse> result = categoryService.searchCategoriesByName(namePart);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
@@ -72,12 +75,8 @@ public class CategoryController {
 //        return ResponseEntity.status(HttpStatus.OK).body(categories);
 //    }
 
-    public ResponseEntity<List<CategoryResponse>> getAllCategories(@RequestBody PageAndSortRequest request) {
-        List<CategoryResponse> categories = categoryService.getAllCategories(
-                request.getPage(),
-                request.getSize(),
-                request.getSort() != null ? request.getSort().toArray(new String[0]) : null
-        );
+    public ResponseEntity<PagedResponse<CategoryResponse>> getAllCategories(@Valid @ModelAttribute PageAndSortRequest request) {
+        PagedResponse<CategoryResponse> categories = categoryService.getAllCategories(request);
         return ResponseEntity.status(HttpStatus.OK).body(categories);
     }
 }
