@@ -41,27 +41,6 @@ public class MenuItemController {
         return ResponseEntity.status(HttpStatus.OK).body(updatedMenuItem);
     }
 
-    // ✅ Get Menu Item by ID
-    @GetMapping("/menu-items/{id}")
-    public ResponseEntity<MenuItemResponse> getMenuItemById(@PathVariable Long id) {
-        MenuItemResponse response = menuItemService.getMenuItemById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
-    // ✅ Delete Menu Item
-    @DeleteMapping("/menu-items/{id}")
-    public ResponseEntity<Void> deleteMenuItemById(@PathVariable Long id) {
-        menuItemService.deleteMenuItemById(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    // ✅ Search Menu Items by Name (like searchCategoriesByName)
-    @GetMapping("/menu-items/search")
-    public ResponseEntity<List<MenuItemResponse>> searchMenuItemsByName(@RequestParam("name") String namePart) {
-        List<MenuItemResponse> result = menuItemService.searchMenuItemsByName(namePart);
-        return ResponseEntity.status(HttpStatus.OK).body(result);
-    }
-
     // ✅ Get All Menu Items with Pagination & Sorting (POST with JSON body)
     @PostMapping("/menu-items/list")
     public ResponseEntity<PagedResponse<MenuItemResponse>> getAllMenuItems(@RequestBody PageAndSortRequest request) {
@@ -85,5 +64,26 @@ public class MenuItemController {
         Page<MenuItemResponse> pageResult = menuItemService.getAllMenuItemsPage(page, size, sortObjects);
         PagedResponse<MenuItemResponse> resp = PageableUtil.toPagedResponse(pageResult);
         return ResponseEntity.ok(resp);
+    }
+
+    // ✅ Search Menu Items by Name (like searchCategoriesByName)
+    @GetMapping("/menu-items/search")
+    public ResponseEntity<List<MenuItemResponse>> searchMenuItemsByName(@RequestParam("name") String namePart) {
+        List<MenuItemResponse> result = menuItemService.searchMenuItemsByName(namePart);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    // ✅ Get Menu Item by ID
+    @GetMapping("/menu-items/{id}")
+    public ResponseEntity<MenuItemResponse> getMenuItemById(@PathVariable Long id) {
+        MenuItemResponse response = menuItemService.getMenuItemById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    // ✅ Delete Menu Item
+    @DeleteMapping("/menu-items/{id}")
+    public ResponseEntity<Void> deleteMenuItemById(@PathVariable Long id) {
+        menuItemService.deleteMenuItemById(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
