@@ -24,5 +24,5 @@ public interface CategoryService {
     List<CategoryResponse> getAllCategories(int page, int size, String[] sortParams);
 
     Page<CategoryResponse> getAllCategoriesPage(int page, int size,
-            String[] sortParams);
+            java.util.List<com.habibi.cafemanagement.dto.SortRequest> sortObjects);
 }

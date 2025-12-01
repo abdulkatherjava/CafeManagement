@@ -1,7 +1,9 @@
 package com.habibi.cafemanagement.service;
 
+import com.habibi.cafemanagement.common.PageableUtil;
 import com.habibi.cafemanagement.dto.CategoryRequest;
 import com.habibi.cafemanagement.dto.CategoryResponse;
+import com.habibi.cafemanagement.dto.SortRequest;
 import com.habibi.cafemanagement.exception.ResourceNotFoundException;
 import com.habibi.cafemanagement.model.Category;
 import com.habibi.cafemanagement.repository.CategoryRepository;
@@ -103,12 +105,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public org.springframework.data.domain.Page<CategoryResponse> getAllCategoriesPage(int page, int size,
-            String[] sortParams) {
+    public Page<CategoryResponse> getAllCategoriesPage(int page, int size, List<SortRequest> sortObjects) {
         try {
-            List<Sort.Order> orders = sortUtil(sortParams);
-            Pageable pageable = PageRequest.of(page, size, orders.isEmpty() ? Sort.unsorted() : Sort.by(orders));
-
+            Pageable pageable = PageableUtil.toPageable(page, size, sortObjects);
             Page<Category> categoryPage = categoryRepository.findAll(pageable);
             return categoryPage.map(this::mapToResponse);
         } catch (Exception e) {

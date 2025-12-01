@@ -20,4 +20,7 @@ public interface MenuItemService {
     List<MenuItemResponse> searchMenuItemsByName(String namePart);
 
     List<MenuItemResponse> getAllMenuItems(int page, int size, String[] sortParams);
+
+    org.springframework.data.domain.Page<MenuItemResponse> getAllMenuItemsPage(int page, int size,
+            java.util.List<com.habibi.cafemanagement.dto.SortRequest> sortObjects);
 }

@@ -1,7 +1,9 @@
 package com.habibi.cafemanagement.service;
 
+import com.habibi.cafemanagement.common.PageableUtil;
 import com.habibi.cafemanagement.dto.MenuItemRequest;
 import com.habibi.cafemanagement.dto.MenuItemResponse;
+import com.habibi.cafemanagement.dto.SortRequest;
 import com.habibi.cafemanagement.exception.ResourceNotFoundException;
 import com.habibi.cafemanagement.model.Category;
 import com.habibi.cafemanagement.model.MenuItem;
@@ -34,8 +36,7 @@ public class MenuItemServiceImpl implements MenuItemService {
     public MenuItemResponse createMenuItem(MenuItemRequest request) {
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Category not found with id: " + request.getCategoryId()
-                ));
+                        "Category not found with id: " + request.getCategoryId()));
 
         MenuItem menuItem = new MenuItem();
         menuItem.setName(request.getName());
@@ -55,13 +56,11 @@ public class MenuItemServiceImpl implements MenuItemService {
     public MenuItemResponse updateMenuItem(Long id, MenuItemRequest request) {
         MenuItem menuItem = menuItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        String.format("MenuItem not found with id: %s and name: %s", id, request.getName())
-                ));
+                        String.format("MenuItem not found with id: %s and name: %s", id, request.getName())));
 
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Category not found with id: " + request.getCategoryId()
-                ));
+                        "Category not found with id: " + request.getCategoryId()));
 
         menuItem.setName(request.getName());
         menuItem.setDescription(request.getDescription());
@@ -128,17 +127,32 @@ public class MenuItemServiceImpl implements MenuItemService {
         }
     }
 
+    // ✅ Get paginated menu items with sorting
+    @Override
+    public Page<MenuItemResponse> getAllMenuItemsPage(int page, int size, List<SortRequest> sortObjects) {
+        try {
+            Pageable pageable = PageableUtil.toPageable(page, size, sortObjects);
+            Page<MenuItem> itemPage = menuItemRepository.findAll(pageable);
+            return itemPage.map(this::mapToResponse);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch paginated/sorted menu items: " + e.getMessage(), e);
+        }
+    }
+
     // --- helpers ---
     private static List<Sort.Order> sortUtil(String[] sortParams) {
         List<Sort.Order> orders = new ArrayList<>();
-        if (sortParams == null || sortParams.length == 0) return orders;
+        if (sortParams == null || sortParams.length == 0)
+            return orders;
 
         for (String param : sortParams) {
-            if (param == null || param.isBlank()) continue;
+            if (param == null || param.isBlank())
+                continue;
 
             String[] parts = param.split(",");
             String property = parts[0].trim();
-            if (property.isEmpty()) continue;
+            if (property.isEmpty())
+                continue;
 
             Sort.Direction direction = Sort.Direction.ASC; // default
             if (parts.length > 1 && !parts[1].isBlank()) {

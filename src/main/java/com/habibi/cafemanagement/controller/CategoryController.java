@@ -4,7 +4,7 @@ import com.habibi.cafemanagement.dto.CategoryRequest;
 import com.habibi.cafemanagement.dto.CategoryResponse;
 import com.habibi.cafemanagement.dto.PageAndSortRequest;
 import com.habibi.cafemanagement.dto.PagedResponse;
-import com.habibi.cafemanagement.dto.SortInfo;
+import com.habibi.cafemanagement.common.PageableUtil;
 import com.habibi.cafemanagement.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -67,45 +66,29 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-    // @GetMapping("/categories")
-    // public ResponseEntity<List<CategoryResponse>> getAllCategories(
-    // @RequestParam(defaultValue = "0") int page,
-    // @RequestParam(defaultValue = "10") int size,
-    // @RequestParam(defaultValue = "categoryName,asc") String[] sort) {
-    // List<CategoryResponse> categories = categoryService.getAllCategories(page,
-    // size, sort);
-    // return ResponseEntity.status(HttpStatus.OK).body(categories);
-    // }
-
-    // ✅ GET All Categories (paged)
-    @PostMapping("/category-list")
-    public ResponseEntity<PagedResponse<CategoryResponse>> getAllCategories(@RequestBody PageAndSortRequest request) {
-        // Convert sortObjects to string array if provided
-        String[] sortParams = null;
-        if (request.getSortObjects() != null && !request.getSortObjects().isEmpty()) {
-            sortParams = request.getSortObjects().stream()
-                    .map(s -> s.getProperty() + ","
-                            + (s.getDirection() != null ? s.getDirection().toLowerCase() : "asc"))
-                    .toArray(String[]::new);
-        }
-
+    // ✅ GET All Categories with Pagination & Sorting (POST with JSON body)
+    @PostMapping("/categories/list")
+    public ResponseEntity<PagedResponse<CategoryResponse>> getAllCategoriesList(
+            @RequestBody PageAndSortRequest request) {
         Page<CategoryResponse> page = categoryService.getAllCategoriesPage(
                 request.getPage(),
                 request.getSize(),
-                sortParams);
-
-        PagedResponse<CategoryResponse> resp = new PagedResponse<>();
-        resp.setData(page.getContent());
-        resp.setPage(page.getNumber());
-        resp.setSize(page.getSize());
-        resp.setTotalElements(page.getTotalElements());
-        resp.setTotalPages(page.getTotalPages());
-
-        // Build sort metadata
-        List<SortInfo> sortInfos = new ArrayList<>();
-        page.getSort().forEach(order -> sortInfos.add(new SortInfo(order.getProperty(), order.getDirection().name())));
-        resp.setSort(sortInfos);
-
+                request.getSortObjects());
+        PagedResponse<CategoryResponse> resp = PageableUtil.toPagedResponse(page);
         return ResponseEntity.status(HttpStatus.OK).body(resp);
+    }
+
+    // ✅ GET All Categories with Pagination & Sorting (GET with query params - cache
+    // friendly)
+    @GetMapping("/categories")
+    public ResponseEntity<PagedResponse<CategoryResponse>> getAllCategoriesQueryParams(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "sort", required = false) List<String> sortParams) {
+
+        var sortObjects = PageableUtil.parseSortParams(sortParams);
+        Page<CategoryResponse> pageResult = categoryService.getAllCategoriesPage(page, size, sortObjects);
+        PagedResponse<CategoryResponse> resp = PageableUtil.toPagedResponse(pageResult);
+        return ResponseEntity.ok(resp);
     }
 }

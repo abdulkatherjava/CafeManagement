@@ -1,11 +1,14 @@
 package com.habibi.cafemanagement.controller;
 
+import com.habibi.cafemanagement.common.PageableUtil;
 import com.habibi.cafemanagement.dto.MenuItemRequest;
 import com.habibi.cafemanagement.dto.MenuItemResponse;
 import com.habibi.cafemanagement.dto.PageAndSortRequest;
+import com.habibi.cafemanagement.dto.PagedResponse;
 import com.habibi.cafemanagement.service.MenuItemService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -59,22 +62,28 @@ public class MenuItemController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-    // ✅ Get All Menu Items with Pagination & Sorting/
-    // This is tested and working fine.
-    @PostMapping("/menu-item-list")
-    public ResponseEntity<List<MenuItemResponse>> getAllMenuItems(@RequestBody PageAndSortRequest request) {
-        String[] sortParams = null;
-        if (request.getSortObjects() != null && !request.getSortObjects().isEmpty()) {
-            sortParams = request.getSortObjects().stream()
-                    .map(s -> s.getProperty() + ","
-                            + (s.getDirection() != null ? s.getDirection().toLowerCase() : "asc"))
-                    .toArray(String[]::new);
-        }
-
-        List<MenuItemResponse> menuItems = menuItemService.getAllMenuItems(
+    // ✅ Get All Menu Items with Pagination & Sorting (POST with JSON body)
+    @PostMapping("/menu-items/list")
+    public ResponseEntity<PagedResponse<MenuItemResponse>> getAllMenuItems(@RequestBody PageAndSortRequest request) {
+        Page<MenuItemResponse> page = menuItemService.getAllMenuItemsPage(
                 request.getPage(),
                 request.getSize(),
-                sortParams);
-        return ResponseEntity.status(HttpStatus.OK).body(menuItems);
+                request.getSortObjects());
+        PagedResponse<MenuItemResponse> resp = PageableUtil.toPagedResponse(page);
+        return ResponseEntity.status(HttpStatus.OK).body(resp);
+    }
+
+    // ✅ Get All Menu Items with Pagination & Sorting (GET with query params - cache
+    // friendly)
+    @GetMapping("/menu-items")
+    public ResponseEntity<PagedResponse<MenuItemResponse>> getAllMenuItemsQueryParams(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "sort", required = false) List<String> sortParams) {
+
+        var sortObjects = PageableUtil.parseSortParams(sortParams);
+        Page<MenuItemResponse> pageResult = menuItemService.getAllMenuItemsPage(page, size, sortObjects);
+        PagedResponse<MenuItemResponse> resp = PageableUtil.toPagedResponse(pageResult);
+        return ResponseEntity.ok(resp);
     }
 }
