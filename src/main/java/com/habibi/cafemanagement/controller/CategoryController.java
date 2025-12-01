@@ -3,14 +3,18 @@ package com.habibi.cafemanagement.controller;
 import com.habibi.cafemanagement.dto.CategoryRequest;
 import com.habibi.cafemanagement.dto.CategoryResponse;
 import com.habibi.cafemanagement.dto.PageAndSortRequest;
+import com.habibi.cafemanagement.dto.PagedResponse;
+import com.habibi.cafemanagement.dto.SortInfo;
 import com.habibi.cafemanagement.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -73,13 +77,35 @@ public class CategoryController {
     // return ResponseEntity.status(HttpStatus.OK).body(categories);
     // }
 
-    // ✅ GET All Categories
+    // ✅ GET All Categories (paged)
     @GetMapping("/categories")
-    public ResponseEntity<List<CategoryResponse>> getAllCategories(@RequestBody PageAndSortRequest request) {
-        List<CategoryResponse> categories = categoryService.getAllCategories(
+    public ResponseEntity<PagedResponse<CategoryResponse>> getAllCategories(@RequestBody PageAndSortRequest request) {
+        // Convert sortObjects to string array if provided
+        String[] sortParams = null;
+        if (request.getSortObjects() != null && !request.getSortObjects().isEmpty()) {
+            sortParams = request.getSortObjects().stream()
+                    .map(s -> s.getProperty() + ","
+                            + (s.getDirection() != null ? s.getDirection().toLowerCase() : "asc"))
+                    .toArray(String[]::new);
+        }
+
+        Page<CategoryResponse> page = categoryService.getAllCategoriesPage(
                 request.getPage(),
                 request.getSize(),
-                request.getSort() != null ? request.getSort().toArray(new String[0]) : null);
-        return ResponseEntity.status(HttpStatus.OK).body(categories);
+                sortParams);
+
+        PagedResponse<CategoryResponse> resp = new PagedResponse<>();
+        resp.setData(page.getContent());
+        resp.setPage(page.getNumber());
+        resp.setSize(page.getSize());
+        resp.setTotalElements(page.getTotalElements());
+        resp.setTotalPages(page.getTotalPages());
+
+        // Build sort metadata
+        List<SortInfo> sortInfos = new ArrayList<>();
+        page.getSort().forEach(order -> sortInfos.add(new SortInfo(order.getProperty(), order.getDirection().name())));
+        resp.setSort(sortInfos);
+
+        return ResponseEntity.status(HttpStatus.OK).body(resp);
     }
 }

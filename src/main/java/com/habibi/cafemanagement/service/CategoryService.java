@@ -20,4 +20,7 @@ public interface CategoryService {
     List<CategoryResponse> searchCategoriesByName(String namePart);
 
     List<CategoryResponse> getAllCategories(int page, int size, String[] sortParams);
+
+    org.springframework.data.domain.Page<CategoryResponse> getAllCategoriesPage(int page, int size,
+            String[] sortParams);
 }

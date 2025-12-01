@@ -42,8 +42,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryResponse updateCategory(Long id, CategoryRequest request) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        String.format("Category not found with id: %s and name: %s ", id, request.getCategoryName())
-                ));
+                        String.format("Category not found with id: %s and name: %s ", id, request.getCategoryName())));
 
         category.setCategoryName(request.getCategoryName());
         Category updated = categoryRepository.save(category);
@@ -103,18 +102,35 @@ public class CategoryServiceImpl implements CategoryService {
         }
     }
 
+    @Override
+    public org.springframework.data.domain.Page<CategoryResponse> getAllCategoriesPage(int page, int size,
+            String[] sortParams) {
+        try {
+            List<Sort.Order> orders = sortUtil(sortParams);
+            Pageable pageable = PageRequest.of(page, size, orders.isEmpty() ? Sort.unsorted() : Sort.by(orders));
+
+            Page<Category> categoryPage = categoryRepository.findAll(pageable);
+            return categoryPage.map(this::mapToResponse);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch paginated/sorted categories: " + e.getMessage(), e);
+        }
+    }
+
     // --- helpers ---
 
     private static List<Sort.Order> sortUtil(String[] sortParams) {
         List<Sort.Order> orders = new ArrayList<>();
-        if (sortParams == null || sortParams.length == 0) return orders;
+        if (sortParams == null || sortParams.length == 0)
+            return orders;
 
         for (String param : sortParams) {
-            if (param == null || param.isBlank()) continue;
+            if (param == null || param.isBlank())
+                continue;
 
             String[] parts = param.split(",");
             String property = parts[0].trim();
-            if (property.isEmpty()) continue;
+            if (property.isEmpty())
+                continue;
 
             Sort.Direction direction = Sort.Direction.ASC; // default
             if (parts.length > 1 && !parts[1].isBlank()) {

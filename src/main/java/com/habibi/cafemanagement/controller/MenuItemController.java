@@ -63,10 +63,18 @@ public class MenuItemController {
     // This is tested and working fine.
     @GetMapping("/menu-items")
     public ResponseEntity<List<MenuItemResponse>> getAllMenuItems(@RequestBody PageAndSortRequest request) {
+        String[] sortParams = null;
+        if (request.getSortObjects() != null && !request.getSortObjects().isEmpty()) {
+            sortParams = request.getSortObjects().stream()
+                    .map(s -> s.getProperty() + ","
+                            + (s.getDirection() != null ? s.getDirection().toLowerCase() : "asc"))
+                    .toArray(String[]::new);
+        }
+
         List<MenuItemResponse> menuItems = menuItemService.getAllMenuItems(
                 request.getPage(),
                 request.getSize(),
-                request.getSort() != null ? request.getSort().toArray(new String[0]) : null);
+                sortParams);
         return ResponseEntity.status(HttpStatus.OK).body(menuItems);
     }
 }

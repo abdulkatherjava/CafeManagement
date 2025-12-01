@@ -5,7 +5,7 @@ import java.util.List;
 public class PageAndSortRequest {
     private int page = 0;
     private int size = 10;
-    private List<String> sort; // e.g. ["categoryName,asc", "createdAt,desc"]
+    private List<SortRequest> sortObjects; // e.g. [{"property":"categoryName","direction":"asc"}]
 
     // getters and setters
     public int getPage() {
@@ -24,11 +24,11 @@ public class PageAndSortRequest {
         this.size = size;
     }
 
-    public List<String> getSort() {
-        return sort;
+    public List<SortRequest> getSortObjects() {
+        return sortObjects;
     }
 
-    public void setSort(List<String> sort) {
-        this.sort = sort;
+    public void setSortObjects(List<SortRequest> sortObjects) {
+        this.sortObjects = sortObjects;
     }
 }
