@@ -78,7 +78,7 @@ public class CategoryController {
     // }
 
     // ✅ GET All Categories (paged)
-    @GetMapping("/categories")
+    @PostMapping("/category-list")
     public ResponseEntity<PagedResponse<CategoryResponse>> getAllCategories(@RequestBody PageAndSortRequest request) {
         // Convert sortObjects to string array if provided
         String[] sortParams = null;

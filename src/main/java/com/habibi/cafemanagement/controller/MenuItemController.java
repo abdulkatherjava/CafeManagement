@@ -61,7 +61,7 @@ public class MenuItemController {
 
     // ✅ Get All Menu Items with Pagination & Sorting/
     // This is tested and working fine.
-    @GetMapping("/menu-items")
+    @PostMapping("/menu-item-list")
     public ResponseEntity<List<MenuItemResponse>> getAllMenuItems(@RequestBody PageAndSortRequest request) {
         String[] sortParams = null;
         if (request.getSortObjects() != null && !request.getSortObjects().isEmpty()) {

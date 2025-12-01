@@ -5,6 +5,8 @@ import com.habibi.cafemanagement.dto.CategoryResponse;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+
 public interface CategoryService {
 
     CategoryResponse createCategory(CategoryRequest request);
@@ -21,6 +23,6 @@ public interface CategoryService {
 
     List<CategoryResponse> getAllCategories(int page, int size, String[] sortParams);
 
-    org.springframework.data.domain.Page<CategoryResponse> getAllCategoriesPage(int page, int size,
+    Page<CategoryResponse> getAllCategoriesPage(int page, int size,
             String[] sortParams);
 }
