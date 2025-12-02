@@ -114,8 +114,7 @@ public class MenuItemServiceImpl implements MenuItemService {
     @Override
     public List<MenuItemResponse> getAllMenuItems(int page, int size, String[] sortParams) {
         try {
-            List<Sort.Order> orders = sortUtil(sortParams);
-            Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
+            Pageable pageable = PageableUtil.buildPageable(page, size, sortParams);
             Page<MenuItem> itemPage = menuItemRepository.findAll(pageable);
 
             return itemPage.getContent().stream()
@@ -140,33 +139,6 @@ public class MenuItemServiceImpl implements MenuItemService {
     }
 
     // --- helpers ---
-    private static List<Sort.Order> sortUtil(String[] sortParams) {
-        List<Sort.Order> orders = new ArrayList<>();
-        if (sortParams == null || sortParams.length == 0)
-            return orders;
-
-        for (String param : sortParams) {
-            if (param == null || param.isBlank())
-                continue;
-
-            String[] parts = param.split(",");
-            String property = parts[0].trim();
-            if (property.isEmpty())
-                continue;
-
-            Sort.Direction direction = Sort.Direction.ASC; // default
-            if (parts.length > 1 && !parts[1].isBlank()) {
-                try {
-                    direction = Sort.Direction.fromString(parts[1].trim());
-                } catch (IllegalArgumentException ignored) {
-                    // keep default ASC if invalid
-                }
-            }
-
-            orders.add(new Sort.Order(direction, property));
-        }
-        return orders;
-    }
 
     private MenuItemResponse mapToResponse(MenuItem menuItem) {
         MenuItemResponse response = new MenuItemResponse();

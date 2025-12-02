@@ -91,8 +91,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<CategoryResponse> getAllCategories(int page, int size, String[] sortParams) {
         try {
-            List<Sort.Order> orders = sortUtil(sortParams);
-            Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
+            Pageable pageable = PageableUtil.buildPageable(page, size, sortParams);
             Page<Category> categoryPage = categoryRepository.findAll(pageable);
 
             return categoryPage.getContent().stream()
@@ -116,34 +115,6 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     // --- helpers ---
-
-    private static List<Sort.Order> sortUtil(String[] sortParams) {
-        List<Sort.Order> orders = new ArrayList<>();
-        if (sortParams == null || sortParams.length == 0)
-            return orders;
-
-        for (String param : sortParams) {
-            if (param == null || param.isBlank())
-                continue;
-
-            String[] parts = param.split(",");
-            String property = parts[0].trim();
-            if (property.isEmpty())
-                continue;
-
-            Sort.Direction direction = Sort.Direction.ASC; // default
-            if (parts.length > 1 && !parts[1].isBlank()) {
-                try {
-                    direction = Sort.Direction.fromString(parts[1].trim());
-                } catch (IllegalArgumentException ignored) {
-                    // keep default ASC if direction is invalid
-                }
-            }
-
-            orders.add(new Sort.Order(direction, property));
-        }
-        return orders;
-    }
 
     private CategoryResponse mapToResponse(Category category) {
         CategoryResponse response = new CategoryResponse();
