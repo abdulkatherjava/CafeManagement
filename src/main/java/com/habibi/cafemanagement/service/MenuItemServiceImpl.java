@@ -111,21 +111,6 @@ public class MenuItemServiceImpl implements MenuItemService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<MenuItemResponse> getAllMenuItems(int page, int size, String[] sortParams) {
-        try {
-            Pageable pageable = PageableUtil.buildPageable(page, size, sortParams);
-            Page<MenuItem> itemPage = menuItemRepository.findAll(pageable);
-
-            return itemPage.getContent().stream()
-                    .map(this::mapToResponse)
-                    .collect(Collectors.toList());
-
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to fetch paginated/sorted menu items: " + e.getMessage(), e);
-        }
-    }
-
     // ✅ Get paginated menu items with sorting
     @Override
     public Page<MenuItemResponse> getAllMenuItemsPage(int page, int size, List<SortRequest> sortObjects) {

@@ -21,8 +21,6 @@ public interface CategoryService {
 
     List<CategoryResponse> searchCategoriesByName(String namePart);
 
-    List<CategoryResponse> getAllCategories(int page, int size, String[] sortParams);
-
     Page<CategoryResponse> getAllCategoriesPage(int page, int size,
             java.util.List<com.habibi.cafemanagement.dto.SortRequest> sortObjects);
 }

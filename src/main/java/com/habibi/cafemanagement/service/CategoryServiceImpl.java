@@ -89,21 +89,6 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryResponse> getAllCategories(int page, int size, String[] sortParams) {
-        try {
-            Pageable pageable = PageableUtil.buildPageable(page, size, sortParams);
-            Page<Category> categoryPage = categoryRepository.findAll(pageable);
-
-            return categoryPage.getContent().stream()
-                    .map(this::mapToResponse)
-                    .collect(Collectors.toList());
-
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to fetch paginated/sorted categories: " + e.getMessage(), e);
-        }
-    }
-
-    @Override
     public Page<CategoryResponse> getAllCategoriesPage(int page, int size, List<SortRequest> sortObjects) {
         try {
             Pageable pageable = PageableUtil.toPageable(page, size, sortObjects);
