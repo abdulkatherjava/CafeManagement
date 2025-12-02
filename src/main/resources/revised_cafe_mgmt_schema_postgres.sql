@@ -24,7 +24,7 @@ CREATE TABLE menu_items (
     category_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (category_id) REFERENCES categories(id)
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE RESTRICT
 );
 
 -- Table: orders
@@ -32,7 +32,7 @@ CREATE TABLE orders (
     id SERIAL PRIMARY KEY,
     order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     total_amount DECIMAL(10, 2) NOT NULL CHECK (total_amount >= 0),
-    status VARCHAR(20) NOT NULL,
+    order_status VARCHAR(20) NOT NULL,
     mode VARCHAR(20) NOT NULL,
     comments VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -49,20 +49,20 @@ CREATE TABLE order_items (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
-    FOREIGN KEY (menu_item_id) REFERENCES menu_items(id)
+    FOREIGN KEY (menu_item_id) REFERENCES menu_items(id) ON DELETE SET NULL
 );
 
 -- Table: payments
 CREATE TABLE payments (
     id SERIAL PRIMARY KEY,
-    order_id INT NOT NULL UNIQUE,
+    order_id INT NOT NULL,
     amount DECIMAL(10, 2) NOT NULL,
     status VARCHAR(20) NOT NULL,
     mode VARCHAR(20) NOT NULL,
     transaction_id VARCHAR(100),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (order_id) REFERENCES orders(id)
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
 );
 
 -- Table: ingredients

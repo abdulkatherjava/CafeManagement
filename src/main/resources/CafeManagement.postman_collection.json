@@ -269,6 +269,130 @@
           }
         }
       ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderDate\": \"2025-12-02T09:00:00\",\n  \"totalAmount\": 25.50,\n  \"orderStatus\": \"NEW\",\n  \"mode\": \"DINE_IN\",\n  \"comments\": \"No onions\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders"]
+            }
+          }
+        },
+        {
+          "name": "Update Order",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderDate\": \"2025-12-02T09:30:00\",\n  \"totalAmount\": 27.00,\n  \"orderStatus\": \"PROCESSING\",\n  \"mode\": \"TAKEAWAY\",\n  \"comments\": \"Extra napkins\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/orders/{{orderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders", "{{orderId}}"],
+              "variable": [
+                {
+                  "key": "orderId",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Order by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/orders/{{orderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders", "{{orderId}}"],
+              "variable": [
+                {
+                  "key": "orderId",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Order",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/orders/{{orderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders", "{{orderId}}"],
+              "variable": [
+                {
+                  "key": "orderId",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Orders (POST body)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"page\": 0,\n  \"size\": 10,\n  \"sortObjects\": [{ \"property\": \"orderDate\", \"direction\": \"DESC\" }]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/orders/list",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders", "list"]
+            }
+          }
+        },
+        {
+          "name": "Get All Orders (query params)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/orders?page=0&size=10&sort=orderDate,desc",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" },
+                { "key": "sort", "value": "orderDate,desc" }
+              ]
+            }
+          }
+        }
+      ]
     }
   ],
   "variable": [
