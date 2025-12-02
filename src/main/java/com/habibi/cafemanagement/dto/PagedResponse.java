@@ -8,7 +8,7 @@ public class PagedResponse<T> {
     private int size;
     private long totalElements;
     private int totalPages;
-    private List<SortInfo> sort;
+    private List<SortRequest> sort;
 
     public List<T> getData() {
         return data;
@@ -50,11 +50,11 @@ public class PagedResponse<T> {
         this.totalPages = totalPages;
     }
 
-    public List<SortInfo> getSort() {
+    public List<SortRequest> getSort() {
         return sort;
     }
 
-    public void setSort(List<SortInfo> sort) {
+    public void setSort(List<SortRequest> sort) {
         this.sort = sort;
     }
 }

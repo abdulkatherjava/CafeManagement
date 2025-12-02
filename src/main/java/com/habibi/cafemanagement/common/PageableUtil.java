@@ -1,7 +1,6 @@
 package com.habibi.cafemanagement.common;
 
 import com.habibi.cafemanagement.dto.PagedResponse;
-import com.habibi.cafemanagement.dto.SortInfo;
 import com.habibi.cafemanagement.dto.SortRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -92,9 +91,10 @@ public class PageableUtil {
         resp.setTotalElements(page.getTotalElements());
         resp.setTotalPages(page.getTotalPages());
 
-        List<SortInfo> sortInfos = new ArrayList<>();
-        page.getSort().forEach(order -> sortInfos.add(new SortInfo(order.getProperty(), order.getDirection().name())));
-        resp.setSort(sortInfos);
+        List<SortRequest> sortRequests = new ArrayList<>();
+        page.getSort()
+                .forEach(order -> sortRequests.add(new SortRequest(order.getProperty(), order.getDirection().name())));
+        resp.setSort(sortRequests);
 
         return resp;
     }
