@@ -1,9 +1,10 @@
-package com.habibi.cafemanagement.service;
+package com.habibi.cafemanagement.service.menuitem;
 
-import com.habibi.cafemanagement.dto.MenuItemRequest;
-import com.habibi.cafemanagement.dto.MenuItemResponse;
-
+import com.habibi.cafemanagement.dto.menuitem.MenuItemRequest;
+import com.habibi.cafemanagement.dto.menuitem.MenuItemResponse;
+import com.habibi.cafemanagement.dto.common.SortRequest;
 import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface MenuItemService {
 
@@ -19,6 +20,5 @@ public interface MenuItemService {
 
     List<MenuItemResponse> searchMenuItemsByName(String namePart);
 
-    org.springframework.data.domain.Page<MenuItemResponse> getAllMenuItemsPage(int page, int size,
-            java.util.List<com.habibi.cafemanagement.dto.SortRequest> sortObjects);
+    Page<MenuItemResponse> getAllMenuItemsPage(int page, int size, List<SortRequest> sortObjects);
 }

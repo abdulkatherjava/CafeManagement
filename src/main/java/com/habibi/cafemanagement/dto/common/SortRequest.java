@@ -1,6 +1,4 @@
-package com.habibi.cafemanagement.dto;
-
-import java.util.List;
+package com.habibi.cafemanagement.dto.common;
 
 public class SortRequest {
     private String property;

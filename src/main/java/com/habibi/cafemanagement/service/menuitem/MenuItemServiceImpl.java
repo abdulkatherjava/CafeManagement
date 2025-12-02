@@ -1,9 +1,9 @@
-package com.habibi.cafemanagement.service;
+package com.habibi.cafemanagement.service.menuitem;
 
 import com.habibi.cafemanagement.common.PageableUtil;
-import com.habibi.cafemanagement.dto.MenuItemRequest;
-import com.habibi.cafemanagement.dto.MenuItemResponse;
-import com.habibi.cafemanagement.dto.SortRequest;
+import com.habibi.cafemanagement.dto.menuitem.MenuItemRequest;
+import com.habibi.cafemanagement.dto.menuitem.MenuItemResponse;
+import com.habibi.cafemanagement.dto.common.SortRequest;
 import com.habibi.cafemanagement.exception.ResourceNotFoundException;
 import com.habibi.cafemanagement.model.Category;
 import com.habibi.cafemanagement.model.MenuItem;
@@ -13,7 +13,6 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;

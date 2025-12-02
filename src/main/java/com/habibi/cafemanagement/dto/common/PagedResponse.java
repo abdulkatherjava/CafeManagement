@@ -1,5 +1,6 @@
-package com.habibi.cafemanagement.dto;
+package com.habibi.cafemanagement.dto.common;
 
+import com.habibi.cafemanagement.dto.common.SortRequest;
 import java.util.List;
 
 public class PagedResponse<T> {

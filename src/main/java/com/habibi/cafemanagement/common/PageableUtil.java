@@ -1,7 +1,7 @@
 package com.habibi.cafemanagement.common;
 
-import com.habibi.cafemanagement.dto.PagedResponse;
-import com.habibi.cafemanagement.dto.SortRequest;
+import com.habibi.cafemanagement.dto.common.PagedResponse;
+import com.habibi.cafemanagement.dto.common.SortRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;

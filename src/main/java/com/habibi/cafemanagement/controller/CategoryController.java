@@ -1,11 +1,11 @@
 package com.habibi.cafemanagement.controller;
 
-import com.habibi.cafemanagement.dto.CategoryRequest;
-import com.habibi.cafemanagement.dto.CategoryResponse;
-import com.habibi.cafemanagement.dto.PageAndSortRequest;
-import com.habibi.cafemanagement.dto.PagedResponse;
+import com.habibi.cafemanagement.dto.category.CategoryRequest;
+import com.habibi.cafemanagement.dto.category.CategoryResponse;
+import com.habibi.cafemanagement.dto.common.PageAndSortRequest;
+import com.habibi.cafemanagement.dto.common.PagedResponse;
 import com.habibi.cafemanagement.common.PageableUtil;
-import com.habibi.cafemanagement.service.CategoryService;
+import com.habibi.cafemanagement.service.category.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

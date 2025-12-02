@@ -1,20 +1,17 @@
-package com.habibi.cafemanagement.service;
+package com.habibi.cafemanagement.service.category;
 
 import com.habibi.cafemanagement.common.PageableUtil;
-import com.habibi.cafemanagement.dto.CategoryRequest;
-import com.habibi.cafemanagement.dto.CategoryResponse;
-import com.habibi.cafemanagement.dto.SortRequest;
+import com.habibi.cafemanagement.dto.category.CategoryRequest;
+import com.habibi.cafemanagement.dto.category.CategoryResponse;
+import com.habibi.cafemanagement.dto.common.SortRequest;
 import com.habibi.cafemanagement.exception.ResourceNotFoundException;
 import com.habibi.cafemanagement.model.Category;
 import com.habibi.cafemanagement.repository.CategoryRepository;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;

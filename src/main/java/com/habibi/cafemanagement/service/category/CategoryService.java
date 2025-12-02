@@ -1,10 +1,9 @@
-package com.habibi.cafemanagement.service;
+package com.habibi.cafemanagement.service.category;
 
-import com.habibi.cafemanagement.dto.CategoryRequest;
-import com.habibi.cafemanagement.dto.CategoryResponse;
-
+import com.habibi.cafemanagement.dto.category.CategoryRequest;
+import com.habibi.cafemanagement.dto.category.CategoryResponse;
+import com.habibi.cafemanagement.dto.common.SortRequest;
 import java.util.List;
-
 import org.springframework.data.domain.Page;
 
 public interface CategoryService {
@@ -21,6 +20,5 @@ public interface CategoryService {
 
     List<CategoryResponse> searchCategoriesByName(String namePart);
 
-    Page<CategoryResponse> getAllCategoriesPage(int page, int size,
-            java.util.List<com.habibi.cafemanagement.dto.SortRequest> sortObjects);
+    Page<CategoryResponse> getAllCategoriesPage(int page, int size, List<SortRequest> sortObjects);
 }

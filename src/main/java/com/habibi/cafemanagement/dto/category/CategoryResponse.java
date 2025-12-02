@@ -1,4 +1,4 @@
-package com.habibi.cafemanagement.dto;
+package com.habibi.cafemanagement.dto.category;
 
 import java.time.LocalDateTime;
 

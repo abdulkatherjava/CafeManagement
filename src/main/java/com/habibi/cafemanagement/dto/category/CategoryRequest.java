@@ -1,4 +1,4 @@
-package com.habibi.cafemanagement.dto;
+package com.habibi.cafemanagement.dto.category;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
